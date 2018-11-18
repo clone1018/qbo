@@ -1,2 +1,2 @@
 # qbo
-QuickBooks v2 API Client for Go
+QuickBooks v3 API Client for Go
