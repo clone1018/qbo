@@ -47,10 +47,7 @@ func TestNewRequest(t *testing.T) {
 
 	inURL, outURL := "/v3/foo", sandboxBaseURL+"/foo"
 	inBody, outBody := &Account{Name: "l"},
-		`{"Name":"l","SubAccount":false,"ParentRef":{"value":""},"FullyQualifiedName":"","Active":false,
-		  "Classification":"","AccountType":"","AccountSubType":"","AcctNum":"","CurrentBalance":0,
-          "CurrentBalanceWithSubAccounts":0,"CurrencyRef":{"value":"","name":""},"domain":"","sparse":false,
-          "Id":"","SyncToken":"","MetaData":{"CreateTime":"","LastUpdatedTime":""}}`+"\n"
+		`{"Name":"l","SubAccount":false,"ParentRef":{"value":""},"FullyQualifiedName":"","Active":false,"Classification":"","AccountType":"","AccountSubType":"","AcctNum":"","CurrentBalance":0,"CurrentBalanceWithSubAccounts":0,"CurrencyRef":{"value":"","name":""},"domain":"","sparse":false,"Id":"","SyncToken":"","MetaData":{"CreateTime":"","LastUpdatedTime":""}}`+"\n"
 	req, _ := c.NewRequest(ctx, http.MethodGet, inURL, inBody)
 
 	// test relative URL was expanded
