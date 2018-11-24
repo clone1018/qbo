@@ -26,8 +26,13 @@ type Client struct {
 	client *http.Client
 
 	BaseURL *url.URL
+	RealmID string
 
-	Account AccountService
+	Account      AccountService
+	Bill         BillService
+	Class        ClassService
+	JournalEntry JournalEntryService
+	Query        QueryService
 }
 
 type Response struct {
@@ -59,31 +64,34 @@ func (r *ErrorResponse) Error() string {
 }
 
 // NewClient optionally takes in an existing http.Client, and then returns a QuickBooks Online client
-func NewClient(httpClient *http.Client) *Client {
+func NewClient(httpClient *http.Client, realmID string) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
 
-	baseURL, _ := url.Parse(sandboxBaseURL)
+	baseURL, _ := url.Parse(sandboxBaseURL + "/company/" + realmID)
 
 	c := &Client{
 		client:  httpClient,
 		BaseURL: baseURL,
+		RealmID: realmID,
 	}
 
 	c.Account = &AccountServiceClient{client: c}
+	c.Bill = &BillServiceClient{client: c}
+	c.Class = &ClassServiceClient{client: c}
+	c.JournalEntry = &JournalEntryServiceClient{client: c}
+	c.Query = &QueryServiceClient{client: c}
 
 	return c
 }
 
 // NewRequest prepares a QBO request by encoding it's body and setting up HTTP headers
 func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
-	rel, err := url.Parse(urlStr)
+	u, err := url.Parse(c.BaseURL.String() + urlStr)
 	if err != nil {
 		return nil, err
 	}
-
-	u := c.BaseURL.ResolveReference(rel)
 
 	buf := new(bytes.Buffer)
 	if body != nil {

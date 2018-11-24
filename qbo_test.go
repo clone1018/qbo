@@ -23,7 +23,7 @@ func setup() {
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 
-	client = NewClient(nil)
+	client = NewClient(nil, "sandbox")
 	parsedUrl, _ := url.Parse(server.URL)
 	client.BaseURL = parsedUrl
 }
@@ -43,12 +43,13 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestNewRequest(t *testing.T) {
-	c := NewClient(nil)
+	setup()
+	defer teardown()
 
-	inURL, outURL := "/v3/foo", sandboxBaseURL+"/foo"
+	inURL, outURL := "/v3/foo", client.BaseURL.String()+"/v3/foo"
 	inBody, outBody := &Account{Name: "l"},
 		`{"Name":"l","SubAccount":false,"ParentRef":{"value":""},"FullyQualifiedName":"","Active":false,"Classification":"","AccountType":"","AccountSubType":"","AcctNum":"","CurrentBalance":0,"CurrentBalanceWithSubAccounts":0,"CurrencyRef":{"value":"","name":""},"domain":"","sparse":false,"Id":"","SyncToken":"","MetaData":{"CreateTime":"","LastUpdatedTime":""}}`+"\n"
-	req, _ := c.NewRequest(ctx, http.MethodGet, inURL, inBody)
+	req, _ := client.NewRequest(ctx, http.MethodGet, inURL, inBody)
 
 	// test relative URL was expanded
 	if req.URL.String() != outURL {
