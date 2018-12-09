@@ -65,6 +65,7 @@ func (a *AccountServiceClient) Update(context.Context, *Account) (*Account, *Res
 	panic("implement me")
 }
 
-func (a *AccountServiceClient) Query(context.Context, string) ([]Account, *Response, error) {
+func (a *AccountServiceClient) Query(ctx context.Context, searchQuery string) ([]Account, *Response, error) {
 	panic("implement me")
+	//return a.client.Query.Query(ctx, searchQuery)
 }
